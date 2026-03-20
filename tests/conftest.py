@@ -26,10 +26,12 @@ async def get_db_null_pool() -> DBManager:
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db
 
+
 @pytest.fixture()
 async def db() -> DBManager:
     async for db in get_db_null_pool():
         yield db
+
 
 app.dependency_overrides[get_db] = get_db_null_pool
 
@@ -52,6 +54,7 @@ async def add_mock_hotels(setup_database):
         await db.hotels.add_bulk(hotels_)
         await db.commit()
 
+
 @pytest.fixture(scope="session", autouse=True)
 async def add_mock_rooms(setup_database):
     with open("tests/mock_rooms.json", "r", encoding="utf-8") as f:
@@ -62,6 +65,7 @@ async def add_mock_rooms(setup_database):
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         await db.rooms.add_bulk(rooms_)
         await db.commit()
+
 
 # @pytest.fixture(scope="session", autouse=True)
 # async def add_mock_rooms(setup_database):
@@ -74,8 +78,7 @@ async def add_mock_rooms(setup_database):
 @pytest.fixture(scope="session")
 async def ac() -> AsyncClient:
     async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test"
+        transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac
 
@@ -87,8 +90,9 @@ async def register_user(setup_database, ac):
         json={
             "email": "test@gmail.com",
             "password": "12345",
-        }
+        },
     )
+
 
 @pytest.fixture(scope="session")
 async def authenticated_ac(register_user, ac) -> AsyncClient:
@@ -97,7 +101,7 @@ async def authenticated_ac(register_user, ac) -> AsyncClient:
         json={
             "email": "test@gmail.com",
             "password": "12345",
-        }
+        },
     )
     assert ac.cookies.get("access_token") == response.cookies.get("access_token")
     yield ac

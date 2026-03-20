@@ -3,7 +3,12 @@ from datetime import date
 from fastapi import APIRouter, Body, Query
 
 from backend.schemas.facilities import RoomFacilityAddSchema
-from backend.schemas.rooms import RoomAddRequestSchema, RoomAddSchema, RoomPatchSchema, RoomPatchRequestSchema
+from backend.schemas.rooms import (
+    RoomAddRequestSchema,
+    RoomAddSchema,
+    RoomPatchSchema,
+    RoomPatchRequestSchema,
+)
 from backend.api.dependencies import DBDep
 
 
@@ -17,8 +22,11 @@ async def get_rooms(
     date_from: date = Query(example="2026-01-01"),
     date_to: date = Query(example="2026-01-05"),
 ):
-    return await db.rooms.get_filtered_by_time(hotel_id=hotel_id, date_from=date_from, date_to=date_to)
-    
+    return await db.rooms.get_filtered_by_time(
+        hotel_id=hotel_id, date_from=date_from, date_to=date_to
+    )
+
+
 @router.get("/{room_id}")
 async def get_room(db: DBDep, hotel_id: int, room_id: int):
     return await db.rooms.get_one_or_none_with_rels(id=room_id, hotel_id=hotel_id)
@@ -28,15 +36,17 @@ async def get_room(db: DBDep, hotel_id: int, room_id: int):
 async def create_room(
     db: DBDep,
     hotel_id: int,
-    data: RoomAddRequestSchema = Body(openapi_examples={})
+    data: RoomAddRequestSchema = Body(openapi_examples={}),
 ):
     _data = RoomAddSchema(hotel_id=hotel_id, **data.model_dump())
     room = await db.rooms.add(_data)
 
-    rooms_facilities_data = [RoomFacilityAddSchema(room_id=room.id, facility_id=f_id) for f_id in data.facilities_ids]
+    rooms_facilities_data = [
+        RoomFacilityAddSchema(room_id=room.id, facility_id=f_id) for f_id in data.facilities_ids
+    ]
     await db.rooms_facilities.add_bulk(rooms_facilities_data)
     await db.commit()
-    
+
     return {"status": "ok", "data": room}
 
 
@@ -60,8 +70,10 @@ async def patch_room(db: DBDep, hotel_id: int, room_id: int, data: RoomPatchRequ
     await db.rooms.edit(_data, exclude_unset=True, id=room_id, hotel_id=hotel_id)
 
     if "facilities_ids" in _room_data_dict:
-        await db.rooms_facilities.set_room_facilities(room_id, facilities_ids=_room_data_dict["facilities_ids"])
-        
+        await db.rooms_facilities.set_room_facilities(
+            room_id, facilities_ids=_room_data_dict["facilities_ids"]
+        )
+
     await db.commit()
     return {"status": "ok"}
 

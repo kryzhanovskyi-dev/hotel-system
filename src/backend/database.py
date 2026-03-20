@@ -17,11 +17,11 @@ class Base(DeclarativeBase):
     pass
 
 
-'''
+"""
 async def func():
     async with engine.begin() as conn:
         res = await conn.execute(text("SELECT version()"))
         print(res.fetchone())
 
 asyncio.run(func())
-'''
+"""

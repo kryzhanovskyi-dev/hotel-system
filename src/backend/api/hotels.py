@@ -27,8 +27,9 @@ async def get_hotels(
         location=location,
         title=title,
         limit=pagination.per_page,
-        offset=pagination.per_page * (pagination.page - 1)
+        offset=pagination.per_page * (pagination.page - 1),
     )
+
 
 @router.get("/{hotel_id}")
 async def get_hotel(db: DBDep, hotel_id: int):
@@ -36,14 +37,27 @@ async def get_hotel(db: DBDep, hotel_id: int):
 
 
 @router.post("")
-async def create_hotel(db: DBDep, data: HotelAddSchema = Body(openapi_examples={
-    "1": {"summary": "Odesa's example", "value": {
-    "title": "Odesa",
-    "location": "odesa",}},
-    "2": {"summary": "Kyiv's example", "value": {
-    "title": "Kyiv",
-    "location": "kyiv",}},
-})):
+async def create_hotel(
+    db: DBDep,
+    data: HotelAddSchema = Body(
+        openapi_examples={
+            "1": {
+                "summary": "Odesa's example",
+                "value": {
+                    "title": "Odesa",
+                    "location": "odesa",
+                },
+            },
+            "2": {
+                "summary": "Kyiv's example",
+                "value": {
+                    "title": "Kyiv",
+                    "location": "kyiv",
+                },
+            },
+        }
+    ),
+):
     hotel = await db.hotels.add(data)
     await db.commit()
     return {"status": "ok", "data": hotel}

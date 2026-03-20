@@ -7,12 +7,14 @@ class BookingAddRequestSchema(BaseModel):
     date_from: date
     date_to: date
 
+
 class BookingAddSchema(BaseModel):
     user_id: int
     room_id: int
     date_from: date
     date_to: date
     price: int
+
 
 class BookingSchema(BookingAddSchema):
     id: int

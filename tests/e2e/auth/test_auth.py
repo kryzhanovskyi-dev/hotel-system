@@ -1,14 +1,19 @@
 import pytest
 
 
-@pytest.mark.parametrize("email, password, status_code", [
-    ("k1@gmail.com", "k1", 200),
-    ("k1@gmail.com", "k1", 400),
-    ("k2@gmail.com", "k2", 200),
-    ("wggegegew", "k2", 422),
-])
+@pytest.mark.parametrize(
+    "email, password, status_code",
+    [
+        ("k1@gmail.com", "k1", 200),
+        ("k1@gmail.com", "k1", 400),
+        ("k2@gmail.com", "k2", 200),
+        ("wggegegew", "k2", 422),
+    ],
+)
 async def test_auth_flow(
-    email: str, password: str, status_code: int,
+    email: str,
+    password: str,
+    status_code: int,
     ac,
 ):
     # /register
@@ -17,7 +22,7 @@ async def test_auth_flow(
         json={
             "email": email,
             "password": password,
-        }
+        },
     )
     assert reg_res.status_code == status_code
     if reg_res.status_code != 200:
@@ -29,7 +34,7 @@ async def test_auth_flow(
         json={
             "email": email,
             "password": password,
-        }
+        },
     )
     assert log_res.status_code == 200
     assert ac.cookies["access_token"]

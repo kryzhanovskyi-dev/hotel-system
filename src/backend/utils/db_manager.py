@@ -2,7 +2,10 @@ from backend.repositories.bookings import BookingsRepository
 from backend.repositories.hotels import HotelsRepository
 from backend.repositories.rooms import RoomsRepository
 from backend.repositories.users import UsersRepository
-from backend.repositories.facilities import FacilitiesRepository, RoomsFacilitiesRepository
+from backend.repositories.facilities import (
+    FacilitiesRepository,
+    RoomsFacilitiesRepository,
+)
 
 
 class DBManager:
@@ -20,7 +23,7 @@ class DBManager:
         self.rooms_facilities = RoomsFacilitiesRepository(self.session)
 
         return self
-    
+
     async def __aexit__(self, *args):
         await self.session.rollback()
         await self.session.close()

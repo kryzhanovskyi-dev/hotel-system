@@ -33,6 +33,7 @@ async def send_emails_bookings_today_checkin():
     async for db in get_db():
         await db.bookings.get_bookings_with_today_checkin()
 
+
 async def run_send_emails_regularly():
     while True:
         await send_emails_bookings_today_checkin()
@@ -47,6 +48,7 @@ async def lifespan(app: FastAPI):
     yield
     await redis_connector.close()
 
+
 app = FastAPI(docs_url=None, redoc_url=None, lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(hotels_router)
@@ -56,7 +58,7 @@ app.include_router(bookings_router)
 app.include_router(images_router)
 
 
-'''
+"""
 @app.get("/sync/{id}")
 def sync(id: int):
     print(f"sync. Threads: {threading.active_count()}")
@@ -71,7 +73,7 @@ async def async_func(id: int):
     print(f"async. Started by {id}: {time.time():.2f}")
     await asyncio.sleep(3)
     print(f"async. Finished by {id}: {time.time():.2f}")
-'''
+"""
 
 
 @app.get("/docs", include_in_schema=False)

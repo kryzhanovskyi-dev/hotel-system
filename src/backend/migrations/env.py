@@ -12,7 +12,7 @@ from backend.models import *  # noqa: F403
 
 # Before make migrations: !export PYTHONPATH=$PYTHONPATH:$(pwd)/src! and !mv src/backend/migrations/versions/2026/02/*.py src/backend/migrations/versions/!
 # alembic revision --autogenerate -m "{message}"
-# alembic upgrade/downgrade head  
+# alembic upgrade/downgrade head
 
 
 # this is the Alembic Config object, which provides
@@ -76,9 +76,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

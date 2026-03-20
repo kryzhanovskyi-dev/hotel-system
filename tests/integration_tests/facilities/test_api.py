@@ -1,6 +1,3 @@
-
-
-
 async def test_get_facilities(ac):
     response = await ac.get("/facilities")
 
@@ -13,8 +10,8 @@ async def test_post_facility(ac):
     response = await ac.post(
         "/facilities",
         json={
-            "title": title, 
-        }
+            "title": title,
+        },
     )
     res_json = response.json()
 
